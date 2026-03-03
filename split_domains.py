@@ -1,7 +1,7 @@
 import sys
 from math import log
 from Bio import AlignIO
-
+import yaml
 
 def entropy(column):
     counts = {}
@@ -19,7 +19,6 @@ def entropy(column):
         ent -= p * log(p + 1e-12)
     return ent
 
-
 def smooth(values, window):
     n = len(values)
     half = window // 2
@@ -35,8 +34,15 @@ def smooth(values, window):
         out[i] = s / c
     return out
 
+def split_domains(config_path):
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f)
+    
+    alignment_file = config['paths']['alignment2']
+    min_len = config['split']['min_domain_len']
+    window = config['split']['window_size']
+    out_prefix = "RuvC"
 
-def split_domains(alignment_file, out_prefix, min_len=60, window=15):
     aln = AlignIO.read(alignment_file, "fasta")
     nseq = len(aln)
     ncol = aln.get_alignment_length()
@@ -57,33 +63,25 @@ def split_domains(alignment_file, out_prefix, min_len=60, window=15):
 
     sm = smooth(score, window)
 
-    best_i = None
-    best_j = None
-    best_val = None
+    best_i, best_j, best_val = None, None, None
     for i in range(min_len, ncol - 2 * min_len):
         for j in range(i + min_len, ncol - min_len):
             val = sm[i] + sm[j]
             if best_val is None or val < best_val:
-                best_val = val
-                best_i = i
-                best_j = j
+                best_val, best_i, best_j = val, i, j
 
-    if best_i is None or best_j is None:
-        best_i = ncol // 3
-        best_j = 2 * ncol // 3
+    if best_i is None:
+        best_i, best_j = ncol // 3, 2 * ncol // 3
 
     domains = [(0, best_i), (best_i, best_j), (best_j, ncol)]
-    names = ["RuvC-I", "RuvC-II", "RuvC-III"]
+    names = ["I", "II", "III"]
 
     for name, (s, e) in zip(names, domains):
         sub = aln[:, s:e]
-        out_path = f"{out_prefix}_{name}.aln"
+        out_path = f"{out_prefix}-{name}.aln"
         AlignIO.write(sub, out_path, "fasta")
-        print(f"{name}\t{s}\t{e}\t{e - s}")
-
+        print(f"RuvC-{name}\t{s}\t{e}\t{e - s}")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python split_domains.py <alignment2.aln> <output_prefix>")
-        sys.exit(1)
-    split_domains(sys.argv[1], sys.argv[2])
+    config_file = sys.argv[1] if len(sys.argv) > 1 else "config.yaml"
+    split_domains(config_file)

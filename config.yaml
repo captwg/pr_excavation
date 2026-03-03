@@ -1,0 +1,31 @@
+# pr_excavation 流程参数配置文件
+
+# 1. 长度过滤参数
+filter:
+  min_length: 150
+
+# 2. MMSeqs2 聚类参数
+cluster:
+  min_seq_id: 0.7
+  coverage: 0.7
+  cov_mode: 0
+
+# 3. MAFFT 比对参数
+mafft:
+  threads: 128
+  max_iterate: 1000
+  ep: 0.0
+
+# 4. 结构域拆分参数
+split:
+  min_domain_len: 60
+  window_size: 15
+
+# 5. 路径配置
+paths:
+  input_fasta: "cas12p_1_psiblast.fas"
+  filtered_fasta: "filtered.fasta"
+  alignment1: "alignment1.aln"
+  cluster_out: "cluster_out"
+  representative_fasta: "representative.fasta"
+  alignment2: "alignment2.aln"
