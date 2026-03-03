@@ -1,2 +1,4 @@
 alignment1.aln
 evomaster_runs/
+__pycache__/
+*.pyc
