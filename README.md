@@ -2,6 +2,24 @@
 
 本目录包含一次从 PSI‑BLAST 扩展序列开始，到聚类、二次多序列比对、RuvC 结构域拆分，再到 HHM profile 构建的完整结果。
 
+## 流程配置与自动化
+
+为了方便非生信背景的用户修改参数，本项目已将所有可调参数（如长度过滤、聚类阈值等）解耦到 `config.yaml` 文件中。
+
+### 1. 配置文件 `config.yaml`
+您可以直接修改此文件中的数值，无需更改任何 Python 代码：
+- `filter.min_length`: 最小序列长度（默认 150）。
+- `cluster.min_seq_id`: 聚类相似度（默认 0.7，即 70%）。
+- `mafft.threads`: 使用的 CPU 核心数。
+- `split.min_domain_len`: 结构域拆分的最小长度。
+
+### 2. 自动化运行脚本 `run_pipeline.py`
+现在您可以通过一个命令运行整个流程：
+```bash
+python run_pipeline.py
+```
+该脚本会自动读取 `config.yaml` 中的参数并按顺序执行所有步骤。
+
 ## 流程概览（每一步做了什么）
 
 1. **PSI‑BLAST 扩展序列**
