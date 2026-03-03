@@ -1,4 +1,4 @@
-# pr_excavation 结果说明（面向非生信）
+# pr_excavation 结果说明
 
 本目录包含一次从 PSI‑BLAST 扩展序列开始，到聚类、二次多序列比对、RuvC 结构域拆分，再到 HHM profile 构建的完整结果。
 
