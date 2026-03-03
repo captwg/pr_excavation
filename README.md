@@ -6,6 +6,43 @@
 
 本项目已集成 **EvoMaster** 智能 Agent 框架（v0.1.0），作为构建科研智能体的基础设施。
 
+## 实现内容（全部基于 EvoMaster）
+
+本项目在原有流水线（`run_pipeline.py`）基础上，引入 EvoMaster 的 Agent + Tools + Session 机制，实现了一个**多 Agent 协作**的自动化实验框架，包含三类能力：
+
+1. **实验管理 + 扫参（Sweep）**
+   - Planner 生成多组参数组合（例如 `filter.min_length`、`cluster.min_seq_id`、`cluster.coverage`）。
+   - Runner 为每组参数创建独立 trial 目录并执行一次完整 pipeline。
+   - Reviewer 读取产物并给出打分与统计，写入汇总报告。
+
+2. **异常诊断与自动调整（Diagnose & Auto-fix）**
+   - 当某个 trial 运行失败（非 0 退出码），Diagnoser 会根据日志与常见问题做参数修复（例如把非法阈值拉回合理范围、降低线程/迭代以提升稳定性），然后触发重跑。
+
+3. **参数自优化（Optimize）**
+   - 基于 Sweep 的“当前最优 trial”，在其附近做邻域搜索（小幅度调整 `min_seq_id/coverage` 等），迭代尝试更优参数。
+
+对应实现代码位于：
+- `evomaster_integration/`：EvoMaster 多 Agent 集成代码
+  - `multiagent_demo.py`：多 Agent 入口（sweep/diagnose/optimize + 报告输出）
+  - `tools.py`：自定义工具（创建 trial、写 config、运行 pipeline、评估、诊断修复）
+  - `simple_agents.py`：最小 Agent 封装（继承 EvoMaster BaseAgent）
+  - `deterministic_llm.py`：演示用的确定性 LLM（不依赖外部 API Key，也能走通“Agent 调用 Tools”的流程）
+
+## 如何调用 EvoMaster 来跑（多 Agent）
+
+在项目目录下运行：
+
+```bash
+cd /data/wyw/pr_excavation
+conda run -n bio_env python -m evomaster_integration.multiagent_demo
+```
+
+运行后会在当前目录生成：
+- `evomaster_runs/run_YYYYMMDD_HHMMSS/`：一次运行的根目录
+- `evomaster_runs/run_.../trials/<trial_id>/`：每个 trial 的独立工作目录（包含该 trial 的 config、日志、输出产物）
+- `evomaster_runs/run_.../report.txt`：人类可读摘要
+- `evomaster_runs/run_.../summary.json`：结构化汇总（便于程序分析/二次可视化）
+
 ### 1. 配置文件 `config.yaml`
 您可以直接修改此文件中的数值，无需更改任何 Python 代码：
 - `filter.min_length`: 最小序列长度（默认 150）。
@@ -65,6 +102,12 @@ python run_pipeline.py
 - `split_domains.py`：结构域自动拆分脚本。
 - `RuvC-I.aln` / `RuvC-II.aln` / `RuvC-III.aln`：三段结构域比对。
 - `RuvC-I.hhm` / `RuvC-II.hhm` / `RuvC-III.hhm`：三段结构域的 HHM profile。
+- `config.yaml`：流水线参数配置文件（把可调参数集中在一个地方）。
+- `run_pipeline.py`：单次流水线入口脚本（读取 `config.yaml` 并依次执行各步骤）。
+- `requirements.txt`：Python 依赖快照（包含 `evomaster`）。
+- `evomaster_integration/`：EvoMaster 多 Agent 集成实现（见上面的“实现内容”）。
+- `evomaster_runs/`：EvoMaster 运行产物目录（每次运行会自动生成；已在 `.gitignore` 中忽略，不会上传到 GitHub）。
+- `.gitignore`：忽略超大文件与运行产物（例如 `alignment1.aln`、`evomaster_runs/`、`__pycache__/`）。
 
 ## 文件格式解释（非生信版）
 
@@ -135,5 +178,4 @@ conda run -n bio_env hhmake -i /data/wyw/pr_excavation/RuvC-I.aln -o /data/wyw/p
 conda run -n bio_env hhmake -i /data/wyw/pr_excavation/RuvC-II.aln -o /data/wyw/pr_excavation/RuvC-II.hhm
 conda run -n bio_env hhmake -i /data/wyw/pr_excavation/RuvC-III.aln -o /data/wyw/pr_excavation/RuvC-III.hhm
 ```
-
 
