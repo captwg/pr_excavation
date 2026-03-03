@@ -1,0 +1,72 @@
+aliyun-python-sdk-core==2.16.0
+aliyun-python-sdk-kms==2.16.5
+annotated-types==0.7.0
+anthropic==0.84.0
+anyio==4.12.1
+attrs==25.4.0
+biopython @ file:///home/task_177209911474580/croot/biopython_1772099158203/work
+blinker==1.9.0
+certifi==2026.2.25
+cffi==2.0.0
+charset-normalizer==3.4.4
+click==8.3.1
+crcmod==1.7
+cryptography==46.0.5
+distro==1.9.0
+docstring_parser==0.17.0
+evomaster @ git+https://github.com/yuzhu-cai/EvoMaster-ours.git@85b06080ed14fd39237897ffc4f06a1e6ce03b9d
+Flask==3.1.3
+google-auth==2.48.0
+google-genai==1.65.0
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+httpx-sse==0.4.3
+idna==3.11
+importlib_metadata==8.7.0
+itsdangerous==2.2.0
+Jinja2==3.1.6
+jiter==0.13.0
+jmespath==0.10.0
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+MarkupSafe==3.0.3
+mcp==1.26.0
+mkl-service==2.5.2
+mkl_fft @ file:///home/task_176159258761192/conda-bld/mkl_fft_1761592901799/work
+mkl_random @ file:///home/task_176159293348456/conda-bld/mkl_random_1761592947335/work
+numpy @ file:///home/task_177073254252933/croot/numpy_and_numpy_base_1770732580517/work/dist/numpy-2.4.2-cp311-cp311-linux_x86_64.whl#sha256=2460a2a262049a6019d3f868575a0d2004f6816af5312d3729692beac48061c3
+openai==2.24.0
+oss2==2.19.1
+packaging @ file:///home/task_176104885106445/conda-bld/packaging_1761049078006/work
+protobuf==6.33.0
+pyasn1==0.6.2
+pyasn1_modules==0.4.2
+pycparser==3.0
+pycryptodome==3.23.0
+pydantic==2.12.5
+pydantic-settings==2.13.1
+pydantic_core==2.41.5
+PyJWT==2.11.0
+python-dotenv==1.2.2
+python-multipart==0.0.22
+PyYAML==6.0.3
+referencing==0.37.0
+requests==2.32.5
+rpds-py==0.30.0
+rsa==4.9.1
+six==1.17.0
+sniffio==1.3.1
+sse-starlette==3.3.2
+starlette==0.52.1
+tenacity==9.1.4
+tqdm==4.67.3
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+urllib3==2.6.3
+uvicorn==0.41.0
+websockets==16.0
+Werkzeug==3.1.6
+xai-sdk==1.4.0
+zipp==3.23.0
+
